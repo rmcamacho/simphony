@@ -42,6 +42,7 @@ class BeamSplitter(Model):
         Tuple of the names of the input and output ports. By default the pin 
         names are given by pins = ("in1", "in2", "out1", "out2").
     """
+    pin_count = 4
 
     def __init__(
         self, 
@@ -61,6 +62,7 @@ class BeamSplitter(Model):
         self.T3 = T3
         self.pins = pins
         super().__init__()
+        self.rename_pins(*pins)
 
     def s_parameters(self, freqs: "np.array") -> "np.ndarray":
         t = np.cos(self.theta)
