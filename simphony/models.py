@@ -39,7 +39,7 @@ class Model:
     Attributes
     ----------
     freq_range :
-        A tuple of the valid frequency bounds for the element in the  order
+        A tuple of the valid frequency bounds for the element in the order
         (lower, upper). Defaults to (-infty, infty).
     pin_count :
         The number of pins for the device. Must be set if pins is not.
@@ -62,7 +62,6 @@ class Model:
         *,
         freq_range: Optional[Tuple[Optional[float], Optional[float]]] = None,
         pins: Optional[List[Pin]] = None,
-        is_quantum: bool = False
     ) -> None:
         """Initializes an instance of the model.
 
@@ -78,11 +77,6 @@ class Model:
             The pins for the model. If not specified, the pins will be
             be initialized from cls.pins. If that is not specified,
             cls.pin_count number of pins will be initialized.
-        is_quantum : 
-            Flag indicating if the model is should be quantum. If not
-            specified, it will default to False or a classical model. If True, 
-            the s-parameter matrix will include extra loss channel modes/ports 
-            automatically calculated from s-matrix.
 
         Raises
         ------
@@ -357,40 +351,6 @@ class Model:
             Raised if the subclassing element doesn't implement this function.
         """
         raise NotImplementedError
-    
-    def quantum_s_parameters(self, freqs: "np.array") -> "np.ndarray":
-        """Returns quantum scattering parameters for the element with its given
-        parameters as declared in the optional ``__init__()``. The quantum
-        scattering parameters differs from the classical scattering parameters
-        by adding extra ports for loss an extra port for each port.
-
-        Parameters
-        ----------
-        freqs : np.array
-            The frequency range to get scattering parameters for.
-
-        Returns
-        -------
-        s : np.ndarray
-            The scattering parameters corresponding to the frequency range.
-            Its shape should be (the number of frequency points x 2*ports x 2*ports).
-            If the scattering parameters are requested for only a single
-            frequency, for example, and the device has 4 ports, the shape
-            returned by ``s_parameters`` would be (1, 8, 8).
-
-        Raises
-        ------
-        NotImplementedError
-            Raised if the subclassing element doesn't implement this function.
-        """
-
-        if not hasattr(self, "s_parameters"):
-            raise NotImplementedError
-
-        s_matrix = self.s_parameters(freqs)
-        s_matrix = np.pad(s_matrix, ((0, 0), (0, 0), (0, 0), (0, 0)), 'constant')
-
-
 
     def to_file(
         self,
