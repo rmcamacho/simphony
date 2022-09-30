@@ -48,18 +48,12 @@ class BeamSplitter(Model):
         self, 
         theta: float = np.pi / 4, 
         phi: float = np.pi / 2,
-        T0: float = 1,
-        T1: float = 1, 
-        T2: float = 1, 
-        T3: float =1, 
+        T: tuple[float, float, float, float] = (1.0,1.0,1.0,1.0),
         pins: Optional[Tuple[str,...]] = ("in1", "in2", "out1", "out2")
     ) -> None:
         self.phi = phi
         self.theta = theta
-        self.T0 = T0
-        self.T1 = T1
-        self.T2 = T2
-        self.T3 = T3
+        self.T0, self.T1, self.T2, self.T3 = T
         self.pins = pins
         super().__init__()
         self.rename_pins(*pins)
@@ -97,3 +91,4 @@ class BeamSplitter(Model):
         # the s-matrix is frequency independent,
         # so just return it for each frequency
         return np.repeat(smatrix, len(freqs)).reshape((len(freqs), 4, 4))
+        

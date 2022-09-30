@@ -30,6 +30,76 @@ MATH_SUFFIXES = {
     "T": "e12",
 }
 
+def polar2rect(r, theta):
+    """Converts polar coordinates to rectangular coordinates.
+
+    Parameters
+    ----------
+    r : float
+        The magnitude of the vector.
+    theta : float
+        The angle of the vector.
+
+    Returns
+    -------
+    complex
+        The complex number representing the rectangular coordinates.
+    """
+    return r * np.cos(theta)+ 1j * r * np.sin(theta)
+
+def rect2polar(x):
+    """Converts rectangular coordinates to polar coordinates.
+
+    Parameters
+    ----------
+    x : complex
+        The rectangular coordinates as a complex number.
+
+    Returns
+    -------
+    (float, float)
+        The magnitude and angle of the vector.
+    """
+    return (np.sqrt(x.real**2 + x.imag**2), np.arctan2(x.imag, x.real))
+
+def xxpp_to_xpxp(xxpp):
+    """Converts a NxN matrix in xxpp format to xpxp format.
+
+    Parameters
+    ----------
+    xxpp : ndarray 
+        The matrix in xxpp format.
+
+    Returns
+    -------
+    xpxp : ndarray
+        The matrix in xpxp format.
+    """
+    n = xxpp.shape[0]
+    ind = np.arange(n).reshape(2, -1).T.flatten()
+    if len(xxpp.shape) == 1:
+        return xxpp[ind]
+    return xxpp[:, ind][ind]
+
+def xpxp_to_xxpp(xpxp):
+    """Converts a NxN matrix in xpxp format to xxpp format.
+
+    Parameters
+    ----------
+    xpxp : ndarray 
+        The matrix in xpxp format.
+
+    Returns
+    -------
+    xxpp : ndarray
+        The matrix in xxpp format.
+    """
+    n = xpxp.shape[0]
+    ind = np.arange(n).reshape(-1, 2).T.flatten()
+    if len(xpxp.shape) == 1:
+        return xpxp[ind]
+    return xpxp[:, ind][ind]
+
 
 def add_polar(c1, c2):
     """Adds two polar coordinates together.
