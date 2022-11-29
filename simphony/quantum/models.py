@@ -21,7 +21,6 @@ from enum import Enum, auto
 import pandas as pd
 
 
-
 def compose_qstate(*args: "QuantumState") -> "QuantumState":
     """
     Combines the quantum states of the input ports into a single quantum state.
@@ -41,6 +40,7 @@ def compose_qstate(*args: "QuantumState") -> "QuantumState":
     means = np.concatenate(mean_list)
     covs = np.zeros((2*N, 2*N), dtype=float)
     left = 0
+    # TODO: Currently puts states into xpxp, but should change to xxpp
     for qstate in args:
         rowcol = qstate.N*2 + left
         covs[left:rowcol, left:rowcol] = qstate.cov
@@ -61,7 +61,8 @@ class QuantumState:
     """
     Represents a quantum state in a quantum model as a covariance matrix.
 
-    All quantum states are represented in the xxpp convention.
+    All quantum states are represented in the xpxp convention.
+    TODO: switch to xxpp convention
 
     Parameters
     ----------
@@ -132,6 +133,40 @@ class SqueezedState(QuantumState):
             ((1/4) * np.array([[np.exp(-2*r), 0], [0, np.exp(2*r)]])) @ \
             rot_mat.T
         self.pins = PinList([pin])
+
+class TwoModeSqueezed(QuantumState):
+    """
+    Represents a two mode squeezed state in a quantum model as a covariance matrix.
+
+    This state is described by three parameters: a two-mode squeezing parameter r, 
+    and the two initial thermal occupations n_a and n_b.
+
+    Parameters
+    ----------
+    r :
+        The two-mode squeezing parameter of the two mode squeezed state.
+    n_a :
+        The initial thermal occupation of the first mode.
+    n_b :
+        The initial thermal occupation of the second mode.
+    pin_a :
+        The pin to which the first mode is connected.
+    pin_b :
+        The pin to which the second mode is connected.
+    """
+    def __init__(self, r: float, n_a: float, n_b: float, pin_a: "Pin", pin_b: "Pin") -> None:
+        self.r = r
+        self.n_a = n_a
+        self.n_b = n_b
+        self.N = 2
+        self.means = np.array([0, 0, 0, 0])
+        ca = (n_a + 1/2) * np.cosh(r)**2 + (n_b + 1/2) * np.sinh(r)**2
+        cb = (n_b + 1/2) * np.cosh(r)**2 + (n_a + 1/2) * np.sinh(r)**2
+        cab = (n_a + n_b + 1) * np.sinh(r) * np.cosh(r)
+        self.means = np.array([0, 0, 0, 0])
+        self.cov = np.array([[ca, 0, cab, 0], [0, cb, 0, cab], [cab, 0, cb, 0], [0, cab, 0, ca]]) / 2
+        self.pins = PinList([pin_a, pin_b])
+
 
 class QuantumMixin:
     """
@@ -416,8 +451,6 @@ class QuantumMixin:
             #     ]
             # ]
 
-
-
             # print("\noutput: ")
             # print(pd.DataFrame(output_means[0:input.N*2]).T)
             # print(pd.DataFrame(output_cov[0:input.N*2, 0:input.N*2]))
@@ -432,7 +465,7 @@ class QuantumMixin:
             )
             t_freqs.append(transform)
         
-        return (transform, qstates)
+        return (t_freqs, qstates)
             
             
 
@@ -452,10 +485,6 @@ class QuantumBeamSplitter(QuantumMixin, BeamSplitter):
     
 
     
-
-
-
-
 
 
 
