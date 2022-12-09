@@ -8,3 +8,6 @@ Model Libraries
 
 .. automodule:: simphony.libraries.sipann
   :members:
+
+.. automodule:: simphony.libraries.ideal
+  :members:

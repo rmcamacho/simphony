@@ -5,13 +5,11 @@
 """
 simphony.libraries.ideal.models
 ===============================
-This module contains the ideal library which contains ideal PIC components.
 
+This module contains the ideal library which contains ideal PIC components.
 """
 import numpy as np
 from typing import Optional, Tuple
-
-from pkg_resources import split_sections
 from simphony import Model
 
 
