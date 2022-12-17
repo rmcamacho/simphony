@@ -3,8 +3,8 @@
 # (see simphony/__init__.py for details)
 
 """
-simphony.quantum
-================
+simphony.quantum.qmodels
+========================
 
 This module contains QuantumMixin for simphony models.
 """
@@ -30,7 +30,6 @@ def compose_qstate(*args: "QuantumState") -> "QuantumState":
     cov_list = []
     pin_list = []
     for qstate in args:
-
         if not isinstance(qstate, QuantumState):
             raise TypeError("Input must be a QuantumState.")
         N += qstate.N
@@ -77,8 +76,12 @@ class QuantumState:
         The covariance matrix of the quantum state. For example, any coherent 
         state has a covariance matrix of :math:`\begin{bmatrix} 1/4 & 0 \\ 0 & 
         1/4 \end{bmatrix}`. The shape of the matrix must be 2 * N x 2 * N.
+    pins :
+        The pins to which the quantum state is connected.
+    convention :
+        The convention of the means and covariance matrix. Default is 'xpxp'.
     """
-    def __init__(self, means: np.ndarray, cov: np.ndarray,  pins: PinList) -> None:
+    def __init__(self, means: np.ndarray, cov: np.ndarray,  pins: PinList, convention: str='xpxp') -> None:
         self.N = len(pins)
         if means.shape != (2 * self.N,):
             raise ShapeMismatchError("The shape of the means must be 2 * N.")
@@ -88,6 +91,27 @@ class QuantumState:
         self.means = means
         self.cov = cov
         self.pins = pins
+        self.convention = convention
+
+    def to_xpxp(self) -> None:
+        """
+        Converts the means and covariance matrix to the xpxp convention.
+        """
+        if self.convention == 'xxpp':
+            self.means = xxpp_to_xpxp(self.means)
+            self.cov = xxpp_to_xpxp(self.cov)
+            self.convention = 'xpxp'
+    
+    def to_xxpp(self) -> None:
+        """
+        Converts the means and covariance matrix to the xxpp convention.
+        """
+        if self.convention == 'xpxp':
+            self.means = xpxp_to_xxpp(self.means)
+            self.cov = xpxp_to_xxpp(self.cov)
+            self.convention = 'xxpp'
+
+    # TODO: Add alternative methods for combining quantum states at the class level
 
 class CoherentState(QuantumState):
     """
@@ -347,43 +371,33 @@ class QuantumMixin:
         self._q_s_params = quantum_S
         return quantum_S
 
-    def quantum_transform(self, input: QuantumState, freqs: np.ndarray) -> QuantumState:
+    def quantum_transform(self, input: QuantumState, freqs: np.ndarray, alt=False) -> QuantumState:
         """
         This method applies the quantum transformation of the circuit to the 
         input quantum state.
         """
-        # smatrix = self.convert_to_quantum(freqs)
-        smatrix = self.circuit.s_parameters(freqs)
-        self._update_io([QMode.INPUT, QMode.INPUT, QMode.OUTPUT, QMode.OUTPUT])
+        
+        if alt:
+            smatrix = self.circuit.s_parameters(freqs)
+            self._update_io([QMode.INPUT, QMode.INPUT, QMode.OUTPUT, QMode.OUTPUT])
+        else:
+            smatrix = self.convert_to_quantum(freqs)
 
         if input.N != len(self.input_modes):
             raise ValueError("The number of input modes does not match the \
                 number of input ports.")
         vacuum_modes = [CoherentState(0, pin=port) for port in self.vacuum_modes]
-        # print("input: ")
-        # print(pd.DataFrame(input.means))
-        # print(pd.DataFrame(input.cov))
         if len(vacuum_modes) > 0:
             new_input = compose_qstate(input, *vacuum_modes)
         else:
             new_input = input
-        
-        # print(pd.DataFrame(new_input.means))
-        # print(pd.DataFrame(new_input.cov))
-        t_freqs = []
+
+        transforms = []
         qstates = []
-        for freq in range(len(freqs)):
-            s_freq = smatrix[freq]
-            # print("amp smatrix: ")
-            # print(pd.DataFrame(s_freq[:, :, 0]))
-            # print("phase smatrix: ")
-            # print(pd.DataFrame(s_freq[:, :, 1]))
+        for freq_ind in range(len(freqs)):
+            s_freq = smatrix[freq_ind]
             transform = np.zeros((len(self.input_modes + self.vacuum_modes)*2, len(self.output_modes + self.loss_modes)*2))
             step = len(self.input_modes + self.vacuum_modes)
-            # print("inputs: ")
-            # print(self.input_modes + self.vacuum_modes)
-            # print("outputs: ")
-            # print(self.output_modes + self.loss_modes)
             n_outputs = len(self.output_modes)
             n_total = len(self.output_modes + self.loss_modes)
             losses = np.zeros(n_total*2)
@@ -399,77 +413,51 @@ class QuantumMixin:
                     transform[ii + step, jj] = im
                     transform[ii + step, jj + step] = re
 
-                K = 1 - np.sum(np.square(s_freq[si, :, 0]))
-                kappas[ii] = K
-                kappas[ii + step] = K
+                if alt:
+                    K = 1 - np.sum(np.square(s_freq[si, :, 0]))
+                    kappas[ii] = K
+                    kappas[ii + step] = K
 
-                losses[ii] = self.value * (-1) ** (ii)
-                losses[ii + step] = self.value * (-1) ** (ii + 1)
+                    losses[ii] = self.value * (-1) ** (ii)
+                    losses[ii + step] = self.value * (-1) ** (ii + 1)
 
-            # transform[abs(transform) < 1e-10] = 0
-            # print("transform: ")
-            # print(pd.DataFrame(transform))
-            # print(self.value)
-            new_input.means = xpxp_to_xxpp(new_input.means)
-            new_input.cov = xpxp_to_xxpp(new_input.cov)
-            # print("\ninputs: ")
-            # print(pd.DataFrame(new_input.means).T)
-            # print(pd.DataFrame(new_input.cov))
-
-            # print(pd.DataFrame(new_input.means).T)
-            # print(pd.DataFrame(new_input.cov))
+            new_input.to_xxpp()
             output_means = transform @ new_input.means.T
-            output_cov = (
-                transform @ new_input.cov @ transform.T
-                + 1 / 4 * np.diag(kappas) 
-                + 1 / 4 * np.diag(losses)[::-1]
-            )
-            # print(pd.DataFrame(output_means).T)
-            # print(pd.DataFrame(output_cov))
+            if alt:
+                output_cov = (
+                    transform @ new_input.cov @ transform.T
+                    + 1 / 4 * np.diag(kappas) 
+                    + 1 / 4 * np.diag(losses)[::-1]
+                )
+            else:
+                output_cov = transform @ new_input.cov @ transform.T
+                # Loss modes will always be the last modes in the circuit.
+                # We need to remove them from the output means and cov
+                indices = np.arange(2*n_total)
+                droplist = indices[np.r_[n_outputs:n_total, n_total+n_outputs:2*n_total]]
+                output_means = np.delete(output_means, droplist, axis=0)
+                output_cov = np.delete(output_cov, droplist, axis=0)
+                output_cov = np.delete(output_cov, droplist, axis=1)
 
-            # output_means = xxpp_to_xpxp(output_means)
-            # output_cov = xxpp_to_xpxp(output_cov)
-            
-            # convert small numbers to zero
-            # output_means[abs(output_means) < 1e-10] = 0
-            # output_cov[abs(output_cov) < 1e-10] = 0
+                # TODO: Possibly implement tolerance for small numbers
+                # convert small numbers to zero
+                # output_means[abs(output_means) < 1e-10] = 0
+                # output_cov[abs(output_cov) < 1e-10] = 0
 
-            # # remove loss modes
-            # output_means = output_means[
-            #     np.r_[:n_outputs, n_total:n_total+n_outputs]
-            # ]
-            # output_cov = np.r_[
-            #     np.r_[
-            #         '1,2',
-            #         output_cov[:n_outputs, :n_outputs],
-            #         output_cov[:n_outputs, n_total:n_total+n_outputs]
-            #         ],
-            #     np.r_[
-            #         '1,2',
-            #         output_cov[n_total:n_total+n_outputs, :n_outputs],
-            #         output_cov[n_total:n_total+n_outputs, n_total:n_total+n_outputs]
-            #     ]
-            # ]
-
-            # print("\noutput: ")
-            # print(pd.DataFrame(output_means[0:input.N*2]).T)
-            # print(pd.DataFrame(output_cov[0:input.N*2, 0:input.N*2]))
-            # print(pd.DataFrame(output_means).T)
-            # print(pd.DataFrame(output_cov))
             qstates.append(
                 QuantumState(
                     output_means, 
                     output_cov, 
-                    pins=[self.pins["in1"], self.pins["in2"]]
+                    pins=[self.pins["in1"], self.pins["in2"]],
+                    convention='xxpp'
                 )
             )
-            t_freqs.append(transform)
-        
-        return (t_freqs, qstates)
+            transforms.append(transform)
+
+        return (transforms, qstates)
+
             
             
-
-
 # TODO: Decide if this should be moved to examples
 class QuantumBeamSplitter(QuantumMixin, BeamSplitter):
     """
@@ -479,17 +467,3 @@ class QuantumBeamSplitter(QuantumMixin, BeamSplitter):
     """
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs, mixing=kwargs.get('theta', None))
-
-    
-
-    
-
-    
-
-
-
-
-
-
-
-

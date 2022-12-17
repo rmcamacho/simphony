@@ -9,4 +9,4 @@ simphony.quantum
 This module contains components for quantum simulation with simphony models.
 """
 
-from .models import *
+from .qmodels import *
