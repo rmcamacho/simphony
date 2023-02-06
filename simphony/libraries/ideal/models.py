@@ -229,7 +229,7 @@ class NinetyDegreeOpticalHybrid(Model):
         #name: str = "", 
         #freq_range: Optional[Tuple[Optional[float], 
         #Optional[float]]] = None, 
-        T: tuple[float, float, float, float, float] = (1.0, 1.0, 1.0, 1.0, 1.0),
+        T: Tuple[float, float, float, float, float] = (1.0, 1.0, 1.0, 1.0, 1.0),
         pins: Optional[Tuple[str,...]] = ("in1", "out1", "out2", "out3", "out4"),
         length = 0
         ) -> None:
