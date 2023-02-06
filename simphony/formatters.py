@@ -18,6 +18,7 @@ import json
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 
 import numpy as np
+import yaml
 
 from simphony.tools import interpolate
 
@@ -268,6 +269,59 @@ class CircuitJSONFormatter:
             components[i].pins[j].connect(components[k].pins[l])
 
         return components[0].circuit
+
+class CircuitYAMLFormatter:
+    """This class handles converting a circuit to YAML and vice-versa."""
+
+    def __init__(self, models=None):
+        """Gets the models to use when parsing a circuit.
+
+        Parameters
+        ----------
+        models :
+            The models to use when parsing a circuit. If None, no custom models 
+            will be used.
+        """
+        self.models = models
+
+    def format(self, circuit: "Circuit", freqs: np.array) -> str:
+        # FIXME: Have't implemented this yet
+        raise NotImplementedError
+  
+
+    def parse(self, netlist: str) -> "Circuit":
+        from simphony import Model
+
+        with open(netlist, "r") as f:
+            netlist = yaml.load(f, Loader=yaml.FullLoader)
+
+        # load all of the components
+        components = {}
+        for comp_id in netlist["instances"].keys():
+            try:
+                model = self.models[netlist["instances"][comp_id]["component"]]
+                args = {}
+                if model == 'straight':
+                    args['length'] = netlist["instances"][comp_id]["info"]["length"]
+                components[comp_id] = model(**args)
+            except KeyError as e:
+                raise(e, "Model not found in models dictionary")
+
+        # connect the components to each other
+        for k, v in netlist["connections"].items():
+            comp_id1, pin_id1 = k.split(",")
+            comp_id2, pin_id2 = v.split(",")
+            if comp_id1 == 'ebeam_bdc_te1550_1':
+                id1 = (int(pin_id1[1:])+1)%4
+                pin_id1 = 'o' + str(id1)
+            if comp_id2 == 'ebeam_bdc_te1550_1':
+                id2 = (int(pin_id2[1:])+1)%4
+                pin_id2 = 'o' + str(id2)
+            components[comp_id1].pins[int(pin_id1[1:])-1].connect(
+                components[comp_id2].pins[int(pin_id2[1:])-1]
+            )
+
+        return list(components.values())[0].circuit
 
 
 class CircuitSiEPICFormatter(CircuitFormatter):

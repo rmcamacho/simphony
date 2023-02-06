@@ -56,6 +56,22 @@ class Circuit(list):
         """
         super().__init__([component])
 
+    @staticmethod
+    def from_netlist(netlist: str, models: dict = {}) -> "Circuit":
+        """Creates a circuit from a netlist.
+
+        Parameters
+        ----------
+        netlist :
+            The netlist to parse.
+        models :
+            A dictionary of models to use when parsing the netlist.
+        """
+        from simphony.formatters import CircuitYAMLFormatter
+
+        formatter = CircuitYAMLFormatter(models)
+        return formatter.parse(netlist)
+
     def __str__(self) -> str:
         return self._str_recursive(components=self._get_components()).rstrip()
 

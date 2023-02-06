@@ -308,10 +308,12 @@ class QuantumMixin:
         """
         This method returns the quantum S-parameters of the model.
         """
+        if self._q_s_params is not None:
+            return self._q_s_params
         # check if s_parameters() is implemented
         if not hasattr(self, "s_parameters"):
             raise NotImplementedError("s_parameters() is not implemented for this model.")
-        S = self.circuit.s_parameters(freqs)
+        S = self.s_parameters(freqs)
         n_freqs,n_ports,_,_ = S.shape
         new_n_ports = n_ports*3
         quantum_S = np.zeros((n_freqs, new_n_ports, new_n_ports, 2), dtype=float)

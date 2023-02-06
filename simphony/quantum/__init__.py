@@ -10,3 +10,4 @@ This module contains components for quantum simulation with simphony models.
 """
 
 from .qmodels import *
+from .qcircuit import *
