@@ -61,14 +61,14 @@ class BeamSplitter(Model):
     def s_parameters(self, freqs: "np.array") -> "np.ndarray":
         t = np.cos(self.theta)
         r = np.sin(self.theta) * np.exp(1j * self.phi)
-        rp = -np.conj(r)
+        rp = np.conj(r)
 
         # fmt: off
         smatrix = np.array(
             [
-                [0,                            0,                             t * np.sqrt(self.T0*self.T2), rp * np.sqrt(self.T0*self.T3)],
-                [0,                            0,                            r * np.sqrt(self.T1*self.T2),  t * np.sqrt(self.T1*self.T3)],
-                [t * np.sqrt(self.T0*self.T2), rp * np.sqrt(self.T1*self.T2), 0,                             0],
+                [0,                            0,                             t * np.sqrt(self.T0*self.T2),  rp * np.sqrt(self.T0*self.T3)],
+                [0,                            0,                             -r * np.sqrt(self.T1*self.T2),  t * np.sqrt(self.T1*self.T3)],
+                [t * np.sqrt(self.T0*self.T2), -rp * np.sqrt(self.T1*self.T2), 0,                            0],
                 [r * np.sqrt(self.T0*self.T3), t * np.sqrt(self.T1*self.T3),  0,                             0]
             ]
         )
