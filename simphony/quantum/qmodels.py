@@ -13,7 +13,7 @@ import numpy as np
 from simphony.exceptions import ShapeMismatchError
 from simphony.libraries.ideal.models import BeamSplitter
 from simphony.pins import PinList, Pin
-from simphony.tools import xxpp_to_xpxp, xpxp_to_xxpp
+from simphony.tools import xxpp_to_xpxp, xpxp_to_xxpp, polar2rect, rect2polar
 from typing import List, Optional, Tuple
 from scipy.optimize import least_squares
 from enum import Enum, auto
@@ -110,6 +110,37 @@ class QuantumState:
             self.means = xpxp_to_xxpp(self.means)
             self.cov = xpxp_to_xxpp(self.cov)
             self.convention = 'xxpp'
+
+    def modes(self, modes):
+        """
+        Returns the mean and covariance matrix of the specified modes.
+
+        Parameters
+        ----------
+        modes :
+            The modes to return.
+        """
+        if not hasattr(modes, "__iter__"):
+            modes = [modes]
+        if not all(mode < self.N for mode in modes):
+            raise ValueError("Modes must be less than the number of modes.")
+        modes = np.array(modes)
+        print(modes)
+        inds = np.concatenate((modes, (modes + self.N)))
+        print(inds)
+        if self.convention == 'xpxp':
+            means = xpxp_to_xxpp(self.means)
+            cov = xpxp_to_xxpp(self.cov)
+            means = means[inds]
+            cov = cov[np.ix_(inds, inds)]
+            means = xxpp_to_xpxp(means)
+            cov = xxpp_to_xpxp(cov)
+        else:
+            print("xxpp")
+            means = self.means[inds]
+            cov = self.cov[np.ix_(inds, inds)]
+        return means, cov
+
 
     # TODO: Add alternative methods for combining quantum states at the class level
 
@@ -208,6 +239,7 @@ class QuantumMixin:
         self.vacuum_modes = None
         self.loss_modes = None
         self.quantum_state = None
+        self.qpins = None
 
     def update_quantum_state(self, state: QuantumState) -> QuantumState:
         """
@@ -264,8 +296,8 @@ class QuantumMixin:
                 self.vacuum_modes.append(ii)
             elif mode == QMode.LOSS:
                 self.loss_modes.append(ii)
-        assert len(self.vacuum_modes) == len(self.loss_modes), "The number of \
-            vacuum modes must be equal to the number of loss modes."
+        # assert len(self.vacuum_modes) == len(self.loss_modes), "The number of \
+        #     vacuum modes must be equal to the number of loss modes."
 
     @staticmethod
     def _two_mode_loss(x, s_matrix, kappa):
@@ -313,7 +345,7 @@ class QuantumMixin:
         # check if s_parameters() is implemented
         if not hasattr(self, "s_parameters"):
             raise NotImplementedError("s_parameters() is not implemented for this model.")
-        S = self.s_parameters(freqs)
+        S = self.circuit.s_parameters(freqs)
         n_freqs,n_ports,_,_ = S.shape
         new_n_ports = n_ports*3
         quantum_S = np.zeros((n_freqs, new_n_ports, new_n_ports, 2), dtype=float)
@@ -355,6 +387,7 @@ class QuantumMixin:
             bs.multiconnect(bs0.pins["out1"], bs1.pins["out1"], bs2, bs3)
             #TODO: algorithm to find mode types
             modes = [QMode.INPUT]*(len(bs.circuit.pins))
+            self.qpins = bs.circuit.pins
             for pin in bs.circuit.pins:
                 index = bs.circuit.get_pin_index(pin)
                 # print(index, pin.name)
@@ -370,26 +403,74 @@ class QuantumMixin:
                     raise ValueError("Invalid Quantum Circuit Pin Name")
             self._update_io(modes)
             quantum_S[ii] = bs.circuit.s_parameters(np.array([0]))
+        
         self._q_s_params = quantum_S
         return quantum_S
 
-    def quantum_transform(self, input: QuantumState, freqs: np.ndarray, alt=False) -> QuantumState:
+    def unitary_s_parameters(self, freqs: np.ndarray) -> "np.ndarray":
+        """
+        This method returns the quantum S-parameters of the model.
+        """
+        if self._q_s_params is not None:
+            return self._q_s_params
+        # check if s_parameters() is implemented
+        if not hasattr(self, "s_parameters"):
+            raise NotImplementedError("s_parameters() is not implemented for this model.")
+        # calling circuit.s_parameters() ensures we get circuit's s_params not just component's
+        S = self.circuit.s_parameters(freqs)
+        if len(S.shape) == 4:
+            n_freqs,n_ports,_,_ = S.shape
+            S = polar2rect(S)
+        else:
+            n_freqs,n_ports,_ = S.shape
+        new_n_ports = n_ports*2
+        quantum_S = np.zeros((n_freqs, new_n_ports, new_n_ports), dtype=complex)
+        for f in range(len(freqs)):
+            quantum_S[f, :n_ports, :n_ports] = S[f]
+            quantum_S[f, n_ports:, n_ports:] = S[f]
+            for i in range(n_ports):
+                val = np.sqrt(1-quantum_S[f, :n_ports, i].dot(quantum_S[f, :n_ports, i].conj()))
+                quantum_S[f, n_ports+i, i] = val
+                quantum_S[f, i, n_ports+i] = -val
+        
+        modes = [QMode.INPUT]*(new_n_ports)
+        self.qpins = PinList(self, length=new_n_ports)
+        
+        for index, pin in enumerate(self.qpins):
+            if index < n_ports:
+                modes[index] = QMode.INPUT
+            else:
+                modes[index] = QMode.VACUUM
+        self._update_io(modes)
+        quantum_S = rect2polar(quantum_S)
+        self._q_s_params = quantum_S
+        return quantum_S
+
+
+    def quantum_transform(self, input: QuantumState, freqs: np.ndarray, method='convert') -> QuantumState:
         """
         This method applies the quantum transformation of the circuit to the 
         input quantum state.
         """
         
-        if alt:
+        if method=='convert':
+            smatrix = self.convert_to_quantum(freqs)
+        elif method=='analytic':
             smatrix = self.circuit.s_parameters(freqs)
             self._update_io([QMode.INPUT, QMode.INPUT, QMode.OUTPUT, QMode.OUTPUT])
-        else:
-            smatrix = self.convert_to_quantum(freqs)
-
-        if input.N != len(self.input_modes):
-            raise ValueError("The number of input modes does not match the \
-                number of input ports.")
+        elif method=='unitary':
+            smatrix = self.unitary_s_parameters(freqs)
+        if method in ['convert', 'analytic']:
+            if input.N != len(self.input_modes):
+                raise ValueError("The number of input modes does not match the \
+                    number of input ports.")
+        if method == 'unitary':
+            if input.N+len(self.vacuum_modes) != len(self.input_modes + self.vacuum_modes):
+                raise ValueError("Input modes not equal to the dimension of q_sparams.")
+                
         vacuum_modes = [CoherentState(0, pin=port) for port in self.vacuum_modes]
-        if len(vacuum_modes) > 0:
+        
+        if (len(vacuum_modes) > 0) or method == 'unitary':
             new_input = compose_qstate(input, *vacuum_modes)
         else:
             new_input = input
@@ -398,34 +479,50 @@ class QuantumMixin:
         qstates = []
         for freq_ind in range(len(freqs)):
             s_freq = smatrix[freq_ind]
-            transform = np.zeros((len(self.input_modes + self.vacuum_modes)*2, len(self.output_modes + self.loss_modes)*2))
+            if method == 'unitary':
+                n = len(self.input_modes + self.vacuum_modes)
+                m = n
+                n_outputs = n
+                n_total = n
+            if method in ['convert', 'analytic']:
+                n = len(self.input_modes + self.vacuum_modes)
+                m = len(self.output_modes + self.loss_modes)
+                n_outputs = len(self.output_modes)
+                n_total = len(self.output_modes + self.loss_modes)
+                losses = np.zeros(n_total*2)
+                kappas = np.zeros(n_total*2)
+            transform = np.zeros((n*2, m*2))
             step = len(self.input_modes + self.vacuum_modes)
-            n_outputs = len(self.output_modes)
-            n_total = len(self.output_modes + self.loss_modes)
-            losses = np.zeros(n_total*2)
-            kappas = np.zeros(n_total*2)
-            for ii, si in enumerate(self.output_modes + self.loss_modes):
-                for jj, sj in enumerate(self.input_modes + self.vacuum_modes):
-                    S = s_freq[si, sj]
-                    re = S[0] * np.cos(S[1])
-                    im = S[0] * np.sin(S[1])
+            if method in ['convert', 'analytic']:
+                for ii, si in enumerate(self.output_modes + self.loss_modes):
+                    for jj, sj in enumerate(self.input_modes + self.vacuum_modes):
+                        S = s_freq[si, sj]
+                        re = S[0] * np.cos(S[1])
+                        im = S[0] * np.sin(S[1])
 
-                    transform[ii, jj] = re
-                    transform[ii, jj + step] = -im
-                    transform[ii + step, jj] = im
-                    transform[ii + step, jj + step] = re
+                        transform[ii, jj] = re
+                        transform[ii, jj + step] = -im
+                        transform[ii + step, jj] = im
+                        transform[ii + step, jj + step] = re
 
-                if alt:
-                    K = 1 - np.sum(np.square(s_freq[si, :, 0]))
-                    kappas[ii] = K
-                    kappas[ii + step] = K
-
-                    losses[ii] = self.value * (-1) ** (ii)
-                    losses[ii + step] = self.value * (-1) ** (ii + 1)
+                    if method=='analytic':
+                        K = 1 - np.sum(np.square(s_freq[si, :, 0]))
+                        kappas[ii] = K
+                        kappas[ii + step] = K
+                        losses[ii] = self.value * (-1) ** (ii)
+                        losses[ii + step] = self.value * (-1) ** (ii + 1)
+            elif method == 'unitary':
+                comp_smatrix = polar2rect(smatrix)
+                transform[:n, :n] = comp_smatrix.real
+                transform[:n, n:] = -comp_smatrix.imag
+                transform[n:, :n] = comp_smatrix.imag
+                transform[n:, n:] = comp_smatrix.real
+            else:
+                raise ValueError("Method not recognized.")
 
             new_input.to_xxpp()
             output_means = transform @ new_input.means.T
-            if alt:
+            if method=='analytic':
                 output_cov = (
                     transform @ new_input.cov @ transform.T
                     + 1 / 4 * np.diag(kappas) 
@@ -435,27 +532,26 @@ class QuantumMixin:
                 output_cov = transform @ new_input.cov @ transform.T
                 # Loss modes will always be the last modes in the circuit.
                 # We need to remove them from the output means and cov
-                indices = np.arange(2*n_total)
-                droplist = indices[np.r_[n_outputs:n_total, n_total+n_outputs:2*n_total]]
-                output_means = np.delete(output_means, droplist, axis=0)
-                output_cov = np.delete(output_cov, droplist, axis=0)
-                output_cov = np.delete(output_cov, droplist, axis=1)
+                if method in ['convert']:
+                    indices = np.arange(2*n_total)
+                    droplist = indices[np.r_[n_outputs:n_total, n_total+n_outputs:2*n_total]]
+                    output_means = np.delete(output_means, droplist, axis=0)
+                    output_cov = np.delete(output_cov, droplist, axis=0)
+                    output_cov = np.delete(output_cov, droplist, axis=1)
 
                 # TODO: Possibly implement tolerance for small numbers
                 # convert small numbers to zero
                 # output_means[abs(output_means) < 1e-10] = 0
                 # output_cov[abs(output_cov) < 1e-10] = 0
 
-            qstates.append(
-                QuantumState(
-                    output_means, 
-                    output_cov, 
-                    pins=[self.pins["in1"], self.pins["in2"]],
-                    convention='xxpp'
-                )
+            qs = QuantumState(
+                output_means, 
+                output_cov, 
+                pins=self.qpins,
+                convention='xxpp'
             )
+            qstates.append(qs)
             transforms.append(transform)
-
         return (transforms, qstates)
 
             
