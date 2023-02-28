@@ -30,13 +30,14 @@ MATH_SUFFIXES = {
     "T": "e12",
 }
 
-def polar2rect(r, theta):
+def polar2rect(r, theta=None):
     """Converts polar coordinates to rectangular coordinates.
 
     Parameters
     ----------
-    r : float
-        The magnitude of the vector.
+    r : float or ndarray
+        The magnitude of the vector or sparameters. If an array is passed, theta is 
+        ignored and assumes that r is a array of shape (n_freq, n_ports, n_ports, 2) 
     theta : float
         The angle of the vector.
 
@@ -45,7 +46,17 @@ def polar2rect(r, theta):
     complex
         The complex number representing the rectangular coordinates.
     """
-    return r * np.cos(theta)+ 1j * r * np.sin(theta)
+    if hasattr(r, "__iter__"):
+        f, n, _, _ = r.shape
+        comp_sparams = np.zeros((f, n, n), dtype=complex)
+        for i in range(f):
+            for j in range(n):
+                for k in range(n):
+                    comp_sparams[i, j, k] = polar2rect(r[i, j, k, 0], r[i, j, k, 1])
+        return comp_sparams
+
+    else:
+        return r * np.cos(theta)+ 1j * r * np.sin(theta)
 
 def rect2polar(x):
     """Converts rectangular coordinates to polar coordinates.
@@ -60,7 +71,17 @@ def rect2polar(x):
     (float, float)
         The magnitude and angle of the vector.
     """
-    return (np.sqrt(x.real**2 + x.imag**2), np.arctan2(x.imag, x.real))
+    if hasattr(x, "__iter__"):
+        f, n, _ = x.shape
+        sparams = np.zeros((f, n, n, 2))
+        for i in range(f):
+            for j in range(n):
+                for k in range(n):
+                    sparams[i, j, k, 0], sparams[i, j, k, 1] = rect2polar(x[i, j, k])
+        return sparams
+
+    else:
+        return (np.sqrt(x.real**2 + x.imag**2), np.arctan2(x.imag, x.real))
 
 def xxpp_to_xpxp(xxpp):
     """Converts a NxN matrix in xxpp format to xpxp format.
@@ -264,3 +285,4 @@ def interpolate(resampled, sampled, s_parameters):
     """
     func = interp1d(sampled, s_parameters, kind="cubic", axis=0)
     return func(resampled)
+
