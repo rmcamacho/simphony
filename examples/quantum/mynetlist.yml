@@ -1,0 +1,1076 @@
+connections:
+  bend_euler_1,o1: straight_1,o2
+  bend_euler_1,o2: straight_2,o1
+  bend_euler_2,o1: straight_3,o2
+  bend_euler_2,o2: straight_4,o1
+  bend_euler_3,o1: straight_5,o2
+  bend_euler_3,o2: straight_6,o1
+  bend_euler_4,o1: straight_7,o2
+  bend_euler_4,o2: straight_8,o1
+  bend_euler_5,o1: straight_9,o2
+  bend_euler_5,o2: straight_10,o1
+  bend_euler_6,o1: straight_10,o2
+  bend_euler_6,o2: straight_11,o1
+  bend_euler_7,o1: straight_14,o2
+  bend_euler_7,o2: straight_15,o1
+  bend_euler_8,o1: straight_15,o2
+  bend_euler_8,o2: straight_16,o1
+  ebeam_bdc_te1550_1,o1: straight_1,o1
+  ebeam_bdc_te1550_1,o2: straight_3,o1
+  ebeam_bdc_te1550_1,o3: straight_7,o1
+  ebeam_bdc_te1550_1,o4: straight_5,o1
+  grating_coupler_elliptical_trenches_1,o1: straight_11,o2
+  grating_coupler_elliptical_trenches_2,o1: straight_12,o2
+  grating_coupler_elliptical_trenches_3,o1: straight_13,o2
+  grating_coupler_elliptical_trenches_4,o1: straight_16,o2
+  straight_12,o1: straight_2,o2
+  straight_13,o1: straight_6,o2
+  straight_14,o1: straight_8,o2
+  straight_4,o2: straight_9,o1
+instances:
+  bend_euler_1:
+    component: bend_euler
+    info:
+      length: 16.637
+      dy: 10.0
+      radius_min: 7.061
+      radius: 10.0
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+  bend_euler_2:
+    component: bend_euler
+    info:
+      length: 16.637
+      dy: 10.0
+      radius_min: 7.061
+      radius: 10.0
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+  bend_euler_3:
+    component: bend_euler
+    info:
+      length: 16.637
+      dy: 10.0
+      radius_min: 7.061
+      radius: 10.0
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+  bend_euler_4:
+    component: bend_euler
+    info:
+      length: 16.637
+      dy: 10.0
+      radius_min: 7.061
+      radius: 10.0
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+  bend_euler_5:
+    component: bend_euler
+    info:
+      length: 16.637
+      dy: 10.0
+      radius_min: 7.061
+      radius: 10.0
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+  bend_euler_6:
+    component: bend_euler
+    info:
+      length: 16.637
+      dy: 10.0
+      radius_min: 7.061
+      radius: 10.0
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+  bend_euler_7:
+    component: bend_euler
+    info:
+      length: 16.637
+      dy: 10.0
+      radius_min: 7.061
+      radius: 10.0
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+  bend_euler_8:
+    component: bend_euler
+    info:
+      length: 16.637
+      dy: 10.0
+      radius_min: 7.061
+      radius: 10.0
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+  ebeam_bdc_te1550_1:
+    component: ebeam_bdc_te1550
+    info:
+      library: Design kits/ebeam
+      model: ebeam_bdc_te1550
+    settings: {}
+  grating_coupler_elliptical_trenches_1:
+    component: grating_coupler_elliptical_trenches
+    info:
+      period: 0.6759999999999999
+      polarization: te
+      wavelength: 1.53
+    settings:
+      taper_angle: 35
+  grating_coupler_elliptical_trenches_2:
+    component: grating_coupler_elliptical_trenches
+    info:
+      period: 0.6759999999999999
+      polarization: te
+      wavelength: 1.53
+    settings:
+      taper_angle: 35
+  grating_coupler_elliptical_trenches_3:
+    component: grating_coupler_elliptical_trenches
+    info:
+      period: 0.6759999999999999
+      polarization: te
+      wavelength: 1.53
+    settings:
+      taper_angle: 35
+  grating_coupler_elliptical_trenches_4:
+    component: grating_coupler_elliptical_trenches
+    info:
+      period: 0.6759999999999999
+      polarization: te
+      wavelength: 1.53
+    settings:
+      taper_angle: 35
+  straight_1:
+    component: straight
+    info:
+      length: 18.15
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 18.15
+  straight_10:
+    component: straight
+    info:
+      length: 86.0
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 86.0
+  straight_11:
+    component: straight
+    info:
+      length: 0.01
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 0.01
+  straight_12:
+    component: straight
+    info:
+      length: 44.25
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 44.25
+  straight_13:
+    component: straight
+    info:
+      length: 44.25
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 44.25
+  straight_14:
+    component: straight
+    info:
+      length: 24.24
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 24.24
+  straight_15:
+    component: straight
+    info:
+      length: 86.0
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 86.0
+  straight_16:
+    component: straight
+    info:
+      length: 0.01
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 0.01
+  straight_2:
+    component: straight
+    info:
+      length: 0.5
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 0.5
+  straight_3:
+    component: straight
+    info:
+      length: 39.15
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 39.15
+  straight_4:
+    component: straight
+    info:
+      length: 5.2
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 5.2
+  straight_5:
+    component: straight
+    info:
+      length: 18.1
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 18.1
+  straight_6:
+    component: straight
+    info:
+      length: 0.5
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 0.5
+  straight_7:
+    component: straight
+    info:
+      length: 39.1
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 39.1
+  straight_8:
+    component: straight
+    info:
+      length: 5.2
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 5.2
+  straight_9:
+    component: straight
+    info:
+      length: 24.24
+      width: 0.5
+    settings:
+      cross_section:
+        layer: WG
+        width: 0.5
+        offset: 0.0
+        radius: 10.0
+        width_wide: null
+        auto_widen: false
+        auto_widen_minimum_length: 200.0
+        taper_length: 10.0
+        bbox_layers: []
+        bbox_offsets: []
+        cladding_layers: null
+        cladding_offsets: null
+        sections: []
+        port_names:
+        - o1
+        - o2
+        port_types:
+        - optical
+        - optical
+        min_length: 0.01
+        start_straight_length: 0.01
+        end_straight_length: 0.01
+        snap_to_grid: null
+        info: {}
+        name: null
+        add_center_section: true
+        mirror: false
+      length: 24.24
+placements:
+  bend_euler_1:
+    x: -53.6
+    'y': -2.35
+    rotation: 180
+    mirror: 0
+  bend_euler_2:
+    x: -74.6
+    'y': 2.35
+    rotation: 180
+    mirror: 0
+  bend_euler_3:
+    x: 53.4
+    'y': -2.35
+    rotation: 0
+    mirror: true
+  bend_euler_4:
+    x: 74.4
+    'y': 2.35
+    rotation: 0
+    mirror: true
+  bend_euler_5:
+    x: -84.6
+    'y': -37.09
+    rotation: 270
+    mirror: true
+  bend_euler_6:
+    x: -180.6
+    'y': -47.09
+    rotation: 180
+    mirror: 0
+  bend_euler_7:
+    x: 84.4
+    'y': -37.09
+    rotation: 270
+    mirror: 0
+  bend_euler_8:
+    x: 180.4
+    'y': -47.09
+    rotation: 0
+    mirror: true
+  ebeam_bdc_te1550_1:
+    x: 0.0
+    'y': 0.0
+    rotation: 0
+    mirror: 0
+  grating_coupler_elliptical_trenches_1:
+    x: -190.6
+    'y': -56.628
+    rotation: 270
+    mirror: 0
+  grating_coupler_elliptical_trenches_2:
+    x: -63.6
+    'y': -56.628
+    rotation: 270
+    mirror: 0
+  grating_coupler_elliptical_trenches_3:
+    x: 63.4
+    'y': -56.628
+    rotation: 270
+    mirror: 0
+  grating_coupler_elliptical_trenches_4:
+    x: 190.4
+    'y': -56.628
+    rotation: 270
+    mirror: 0
+  straight_1:
+    x: -35.45
+    'y': -2.35
+    rotation: 180
+    mirror: 0
+  straight_10:
+    x: -94.6
+    'y': -47.09
+    rotation: 180
+    mirror: 0
+  straight_11:
+    x: -190.6
+    'y': -57.09
+    rotation: 270
+    mirror: 0
+  straight_12:
+    x: -63.6
+    'y': -12.85
+    rotation: 270
+    mirror: 0
+  straight_13:
+    x: 63.4
+    'y': -12.85
+    rotation: 270
+    mirror: 0
+  straight_14:
+    x: 84.4
+    'y': -12.85
+    rotation: 270
+    mirror: 0
+  straight_15:
+    x: 94.4
+    'y': -47.09
+    rotation: 0
+    mirror: 0
+  straight_16:
+    x: 190.4
+    'y': -57.09
+    rotation: 270
+    mirror: 0
+  straight_2:
+    x: -63.6
+    'y': -12.35
+    rotation: 270
+    mirror: 0
+  straight_3:
+    x: -35.45
+    'y': 2.35
+    rotation: 180
+    mirror: 0
+  straight_4:
+    x: -84.6
+    'y': -7.65
+    rotation: 270
+    mirror: 0
+  straight_5:
+    x: 35.3
+    'y': -2.35
+    rotation: 0
+    mirror: 0
+  straight_6:
+    x: 63.4
+    'y': -12.35
+    rotation: 270
+    mirror: 0
+  straight_7:
+    x: 35.3
+    'y': 2.35
+    rotation: 0
+    mirror: 0
+  straight_8:
+    x: 84.4
+    'y': -7.65
+    rotation: 270
+    mirror: 0
+  straight_9:
+    x: -84.6
+    'y': -12.85
+    rotation: 270
+    mirror: 0
+ports:
+  vertical_te_00: grating_coupler_elliptical_trenches_1,vertical_te
+  vertical_te_01: grating_coupler_elliptical_trenches_2,vertical_te
+  vertical_te_02: grating_coupler_elliptical_trenches_3,vertical_te
+  vertical_te_03: grating_coupler_elliptical_trenches_4,vertical_te
+name: ebeam_bdc_te1550_add_fi_9c73eda8
